@@ -21,3 +21,23 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/.classpath
+/.project
+/.settings/org.eclipse.jdt.core.prefs
+/.settings/org.eclipse.m2e.core.prefs
+/Thumbs.db
+/src/test/resources/*.db
+/target/classes/META-INF/MANIFEST.MF
+/target/classes/META-INF/maven/co.aurasphere/maze-solver/pom.properties
+/target/classes/META-INF/maven/co.aurasphere/maze-solver/pom.xml
+/target/test-classes/1.bmp
+/target/test-classes/1.jpg
+/target/test-classes/2.png
+/target/test-classes/3.bmp
+/target/test-classes/3.png
+/target/test-classes/4.png
+/target/test-classes/5.png
+/target/test-classes/6.jpg
+/target/test-classes/7.png
+/target/test-classes/8.bmp
+/target/test-classes/9.bmp

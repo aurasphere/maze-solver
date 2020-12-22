@@ -1,26 +1,3 @@
-/*
- * MIT License
- *
- * Copyright (c) 2018 Donato Rimenti
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package co.aurasphere.mazesolver;
 
 import java.util.HashMap;
@@ -81,7 +58,7 @@ public class AStarAlgorithm {
 			Node q = openList.poll();
 
 			// Uncomment to enable logging.
-			System.out.println(q);
+//			System.out.println(q);
 
 			// Main loop of the algorithm.
 			for (Node successor : q.getAdjacentNodes()) {
@@ -129,19 +106,14 @@ public class AStarAlgorithm {
 	}
 
 	/**
-	 * Returns the distance between two nodes. The distance is defined ad
-	 * {@link #DIAGONAL_COST} if the move is diagonal or 1 otherwise.
+	 * Returns the distance between two nodes.
 	 * 
 	 * @param start the starting node
 	 * @param end the ending node
 	 * @return the distance between the nodes
 	 */
 	private double distanceBetween(Node start, Node end) {
-		// Nodes are diagonal.
-		if (start.x != end.x && start.y != end.y) {
-			return DIAGONAL_COST;
-		}
-		// Nodes are not diagonal.
+		// Nodes are never diagonal.
 		return 1;
 	}
 
@@ -178,9 +150,9 @@ public class AStarAlgorithm {
 	 * @return the estimated cost to reach the end from the node n
 	 */
 	private int h(Node n) {
-		// We use Chebyshev distance (or diagonal distance) as our heuristic
-		// since we can move in 8 different directions.
-		return Math.max(Math.abs(n.x - target.x), Math.abs(n.y - target.y));
+		// We use Manhattan distance (or diagonal distance) as our heuristic
+		// since we can't move diagonally.
+		return Math.abs(n.x - target.x) + Math.abs(n.y - target.y);
 	}
 
 	/**

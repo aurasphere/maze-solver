@@ -1,7 +1,6 @@
 package co.aurasphere.mazesolver;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
@@ -15,72 +14,44 @@ import java.util.Set;
  */
 public class MazeSolver {
 
-	public static BufferedImage solveMaze(BufferedImage maze, Point start, Point end, Point cursorSize) {
-		CannyEdgeDetector detector = new CannyEdgeDetector();
+	public static int mazeHeight;
 
-		// adjust its parameters as desired
-		detector.setLowThreshold(0.5f);
-		detector.setHighThreshold(20f);
+	public static int mazeWidth;
 
-		// apply it to an image
-		detector.setSourceImage(maze);
-		detector.process();
-		BufferedImage edgesImage = detector.getEdgesImage();
+	public static Set<Node> obstaclePoints;
 
-		Graphics graphics = maze.getGraphics();
-		// Starting point.
-		graphics.setColor(Color.GREEN);
-		graphics.drawOval(start.x, start.y, 3, 3);
+	public static Color wallColor = Color.BLACK;
 
-		// End point.
-		graphics.drawOval(end.x, end.y, 3, 3);
+	public static Color solutionColor = Color.RED;
 
-		int nodeDistanceX = cursorSize.x;
-		int nodeDistanceY = cursorSize.y;
+	public static BufferedImage solveMaze(BufferedImage maze, Point start, Point end) {
+		
+		// Sets global variables.
+		mazeHeight = maze.getHeight();
+		mazeWidth = maze.getWidth();
+
+		// Maps the walls.
 		Set<Node> obstacles = new HashSet<>();
-		for (int x = 0; x < edgesImage.getWidth(); x += cursorSize.x) {
-			for (int y = 0; y < edgesImage.getHeight(); y += cursorSize.y) {
-//				Color color = new Color(edgesImage.getRGB(x, y)); 
-				Color color = getColorFromBlock(edgesImage, cursorSize, x, y);
-				if (color.equals(Color.BLACK)) {
-					obstacles.add(new Node(x - nodeDistanceX, y - nodeDistanceY));
-					obstacles.add(new Node(x - nodeDistanceX, y - nodeDistanceY));
-					obstacles.add(new Node(x - nodeDistanceX, y - nodeDistanceY));
-					obstacles.add(new Node(x, y - nodeDistanceY));
+		for (int x = 0; x < mazeWidth; x++) {
+			for (int y = 0; y < mazeHeight; y++) {
+				Color color = new Color(maze.getRGB(x, y));
+				if (color.equals(wallColor)) {
 					obstacles.add(new Node(x, y));
-					obstacles.add(new Node(x, y + nodeDistanceY));
-					obstacles.add(new Node(x + nodeDistanceX, -nodeDistanceY));
-					obstacles.add(new Node(x + nodeDistanceX, y));
-					obstacles.add(new Node(x + nodeDistanceX, y + nodeDistanceY));
 				}
 			}
 		}
+		obstaclePoints = obstacles;
 
-		Labyrinth.obstaclePoints.addAll(obstacles);
-		AStarAlgorithm algo = new AStarAlgorithm();
-		Node result = algo.calculateShortestPath(new Node(start), new Node(end));
+		// Solves the maze.
+		Node result = new AStarAlgorithm().calculateShortestPath(new Node(start), new Node(end));
 
-		graphics.setColor(Color.RED);
+		// Prints the solution.
 		if (result != null) {
 			while (result.getParent() != null) {
-				graphics.drawLine(result.x, result.y, result.getParent().x, result.getParent().y);
+				maze.setRGB(result.x, result.y, solutionColor.getRGB());
 				result = result.getParent();
 			}
 		}
 		return maze;
-	}
-
-	// If the block	 contains a black pixel then the whole block is black
-	private static Color getColorFromBlock(BufferedImage edgesImage, Point cursorSize, int x, int y) {
-		for (int a = x; a < x + cursorSize.x; a++) {
-			for (int b = y; b < y + cursorSize.y; b++) {
-				if (new Color(edgesImage.getRGB(a, b)).equals(Color.WHITE)) {
-					System.out.println("BLACK");
-					return Color.BLACK;
-				}
-			}
-		}
-		System.out.println("WHITE");
-		return Color.WHITE;
 	}
 }
